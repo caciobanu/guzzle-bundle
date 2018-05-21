@@ -1,0 +1,8 @@
+caciobanu_guzzle:
+    clients:
+        default:
+            base_uri: 'https://test.com/path/?query=1#fragment'
+            options:
+                timeout: 30
+                headers:
+                    'User-Agent': 'test agent'

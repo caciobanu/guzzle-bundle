@@ -1,0 +1,23 @@
+<?xml version="1.0" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+        <service id="caciobanu_guzzle.handler_stack.abstract" class="GuzzleHttp\HandlerStack" abstract="true">
+            <factory class="GuzzleHttp\HandlerStack" method="create"/>
+        </service>
+
+        <service id="caciobanu_guzzle.message_formatter.abstract" class="GuzzleHttp\MessageFormatter" abstract="true">
+            <argument type="constant">GuzzleHttp\MessageFormatter::DEBUG</argument>
+        </service>
+
+        <service id="caciobanu_guzzle.logger.abstract" class="Closure" abstract="true">
+            <factory class="GuzzleHttp\Middleware" method="log"/>
+            <argument type="service" id="monolog.logger" on-invalid="ignore"/>
+            <tag name="monolog.logger" channel="caciobanu_guzzle"/>
+            <argument/> <!-- guzzle message formatter -->
+            <argument type="constant">Psr\Log\LogLevel::INFO</argument>
+        </service>
+    </services>
+</container>

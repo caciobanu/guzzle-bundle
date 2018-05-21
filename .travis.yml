@@ -1,0 +1,34 @@
+language: php
+
+php:
+  - 7.1
+  - 7.2
+
+jobs:
+  include:
+    - stage: Code Quality
+      php: 7.2
+      script:
+        - vendor/bin/phpunit --coverage-clover=coverage.clover
+      after_script:
+        - wget https://scrutinizer-ci.com/ocular.phar
+        - php ocular.phar code-coverage:upload --format=php-clover coverage.clover
+
+    - stage: Code Quality
+      php: 7.1
+      script:
+        - vendor/bin/phpstan analyse src -c phpstan.neon -l 7
+
+    - stage: Code Quality
+      php: 7.1
+      script:
+        - vendor/bin/phpcs
+
+before_install:
+  - composer self-update
+
+install:
+  - composer install
+
+script:
+  - vendor/bin/phpunit

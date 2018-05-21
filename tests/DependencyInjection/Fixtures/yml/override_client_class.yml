@@ -1,0 +1,5 @@
+caciobanu_guzzle:
+    clients:
+        default:
+            client_class: 'Caciobanu\Symfony\GuzzleBundle\Tests\DependencyInjection\Fixtures\TestClient'
+            base_uri: 'https://test.com/path/?query=1#fragment'

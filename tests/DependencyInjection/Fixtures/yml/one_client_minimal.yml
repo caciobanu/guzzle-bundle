@@ -1,0 +1,4 @@
+caciobanu_guzzle:
+    clients:
+        default:
+            base_uri: 'https://test.com/path/?query=1#fragment'

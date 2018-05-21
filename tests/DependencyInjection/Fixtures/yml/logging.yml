@@ -1,0 +1,12 @@
+services:
+    monolog.logger:
+        class: 'Psr\Log\NullLogger'
+        public: true
+
+caciobanu_guzzle:
+    clients:
+        default:
+            base_uri: 'https://test.com/path/?query=1#fragment'
+            logging: true
+        no_logging:
+            base_uri: 'https://test.com/path/?query=1#fragment'

@@ -1,0 +1,6 @@
+services:
+    monolog.logger:
+        class: 'Psr\Log\NullLogger'
+        public: true
+
+caciobanu_guzzle: ~
