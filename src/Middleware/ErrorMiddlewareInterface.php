@@ -11,5 +11,5 @@ interface ErrorMiddlewareInterface extends MiddlewareInterface
         RequestInterface $request,
         \Exception $exception,
         ?ResponseInterface $response = null
-    ): ?ResponseInterface;
+    ): void;
 }
