@@ -38,6 +38,7 @@ caciobanu_guzzle:
 ```
 
 ## Usage
+
 Using services in controller:
 
 ```php
@@ -45,6 +46,42 @@ Using services in controller:
 $client   = $this->get('caciobanu_guzzle.client.google');
 $response = $client->get('/');
 ```
+
+## Adding Guzzle middleware
+
+Adding a Guzzle middleware is a two step process:
+
+1. Create a new class:
+```php
+<?php
+
+namespace App\Guzzle\Middleware;
+
+use Caciobanu\Symfony\GuzzleBundle\Middleware\BeforeRequestMiddlewareInterface;
+
+class MyMiddleware implements BeforeRequestMiddlewareInterface
+{
+    public function __invoke(RequestInterface $request): RequestInterface
+    {
+        // Do something with the request
+        return $request;
+    }
+}
+```
+
+2. Create a Symfony service like so:
+```
+# config/services.yaml
+services:
+    App\Guzzle\Middleware\MyMiddleware:
+        tags:
+            - { name: 'caciobanu_guzzle.middleware', client: 'google' }
+```
+
+There are three middleware interfaces that can be implemented:
+- Caciobanu\Symfony\GuzzleBundle\Middleware\BeforeRequestMiddlewareInterface - marks middleware to be called before sending the request
+- Caciobanu\Symfony\GuzzleBundle\Middleware\AfterResponseMiddlewareInterface - marks middleware to be called after the response is received
+- Caciobanu\Symfony\GuzzleBundle\Middleware\OnErrorMiddlewareInterface - marks middleware to be called when an errors occurs
 
 ## Credits
 
