@@ -15,12 +15,12 @@ jobs:
         - php ocular.phar code-coverage:upload --format=php-clover coverage.clover
 
     - stage: Code Quality
-      php: 7.1
+      php: 7.2
       script:
         - vendor/bin/phpstan analyse src -c phpstan.neon -l 7
 
     - stage: Code Quality
-      php: 7.1
+      php: 7.2
       script:
         - vendor/bin/phpcs
 
