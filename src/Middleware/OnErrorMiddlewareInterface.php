@@ -5,7 +5,7 @@ namespace Caciobanu\Symfony\GuzzleBundle\Middleware;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
-interface ErrorMiddlewareInterface extends MiddlewareInterface
+interface OnErrorMiddlewareInterface extends MiddlewareInterface
 {
     public function __invoke(
         RequestInterface $request,

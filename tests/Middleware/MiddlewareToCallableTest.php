@@ -5,7 +5,7 @@ namespace Caciobanu\Symfony\GuzzleBundle\Tests\Middleware;
 use Caciobanu\Symfony\GuzzleBundle\Middleware\MiddlewareInterface;
 use Caciobanu\Symfony\GuzzleBundle\Middleware\MiddlewareToCallable;
 use Caciobanu\Symfony\GuzzleBundle\Middleware\BeforeRequestMiddlewareInterface;
-use Caciobanu\Symfony\GuzzleBundle\Middleware\ErrorMiddlewareInterface;
+use Caciobanu\Symfony\GuzzleBundle\Middleware\OnErrorMiddlewareInterface;
 use Caciobanu\Symfony\GuzzleBundle\Middleware\AfterResponseMiddlewareInterface;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
@@ -77,7 +77,7 @@ class MiddlewareToCallableTest extends TestCase
      */
     public function testErrorMiddleware(): void
     {
-        $middleware = $this->getMockBuilder(ErrorMiddlewareInterface::class)
+        $middleware = $this->getMockBuilder(OnErrorMiddlewareInterface::class)
             ->getMock();
 
         $middleware->expects($this->exactly(1))

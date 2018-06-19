@@ -25,7 +25,7 @@ class MiddlewareToCallable
                         );
                     };
                 };
-            case ($middleware instanceof ErrorMiddlewareInterface):
+            case ($middleware instanceof OnErrorMiddlewareInterface):
                 return function (callable $handler) use ($middleware) {
                     return function ($request, array $options) use ($handler, $middleware) {
                         return $handler($request, $options)->then(
