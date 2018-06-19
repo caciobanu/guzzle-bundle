@@ -58,6 +58,7 @@ Adding a Guzzle middleware is a two step process:
 namespace App\Guzzle\Middleware;
 
 use Caciobanu\Symfony\GuzzleBundle\Middleware\BeforeRequestMiddlewareInterface;
+use Psr\Http\Message\RequestInterface;
 
 class MyMiddleware implements BeforeRequestMiddlewareInterface
 {
