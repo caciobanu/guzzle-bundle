@@ -7,6 +7,7 @@ use Caciobanu\Symfony\GuzzleBundle\Middleware\MiddlewareToCallable;
 use Caciobanu\Symfony\GuzzleBundle\Middleware\BeforeRequestMiddlewareInterface;
 use Caciobanu\Symfony\GuzzleBundle\Middleware\OnErrorMiddlewareInterface;
 use Caciobanu\Symfony\GuzzleBundle\Middleware\AfterResponseMiddlewareInterface;
+use Caciobanu\Symfony\GuzzleBundle\Middleware\RetryMiddlewareInterface;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Handler\MockHandler;
@@ -14,6 +15,8 @@ use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\TestCase;
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
 
 /**
  * @covers \Caciobanu\Symfony\GuzzleBundle\Middleware\MiddlewareToCallable
@@ -97,6 +100,43 @@ class MiddlewareToCallableTest extends TestCase
 
         $client->request('GET', '/');
         $client->request('GET', '/');
+    }
+
+    public function testRetryMiddleware(): void
+    {
+        $middleware = new class implements RetryMiddlewareInterface {
+            public function __invoke(
+                int $retries,
+                RequestInterface $request,
+                ?ResponseInterface $response = null,
+                ?RequestException $exception = null
+            ): bool {
+                if (null !== $exception) {
+                    return true;
+                }
+
+                if (null !== $response && 500 === $response->getStatusCode()) {
+                    return true;
+                }
+
+                return false;
+            }
+        };
+
+        // Create a mock and queue two responses.
+        $mock = new MockHandler([
+            new RequestException("Error Communicating with Server", new Request('GET', '/')),
+            new Response(500),
+            new Response(200),
+        ]);
+
+        $handler = HandlerStack::create($mock);
+        $client = new Client(['handler' => $handler]);
+
+        $handler->push(MiddlewareToCallable::toCallable($middleware));
+
+        $response = $client->request('GET', '/');
+        $this->assertEquals(200, $response->getStatusCode());
     }
 
     /**

@@ -3,6 +3,7 @@
 namespace Caciobanu\Symfony\GuzzleBundle\Middleware;
 
 use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\Middleware;
 
 class MiddlewareToCallable
 {
@@ -42,6 +43,8 @@ class MiddlewareToCallable
                         );
                     };
                 };
+            case ($middleware instanceof RetryMiddlewareInterface):
+                return Middleware::retry($middleware);
         }
 
         throw new \RuntimeException('Invalid middleware provided.');
