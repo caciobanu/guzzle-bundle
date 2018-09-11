@@ -83,6 +83,7 @@ There are three middleware interfaces that can be implemented:
 - Caciobanu\Symfony\GuzzleBundle\Middleware\BeforeRequestMiddlewareInterface - marks middleware to be called before sending the request
 - Caciobanu\Symfony\GuzzleBundle\Middleware\AfterResponseMiddlewareInterface - marks middleware to be called after the response is received
 - Caciobanu\Symfony\GuzzleBundle\Middleware\OnErrorMiddlewareInterface - marks middleware to be called when an errors occurs
+- Caciobanu\Symfony\GuzzleBundle\Middleware\RetryMiddlewareInterface - offers the possibility to retry requests
 
 ## Credits
 
