@@ -14,7 +14,7 @@
 
         <service id="caciobanu_guzzle.logger.abstract" class="Closure" abstract="true">
             <factory class="GuzzleHttp\Middleware" method="log"/>
-            <argument type="service" id="monolog.logger" on-invalid="ignore"/>
+            <argument type="service" id="logger" on-invalid="ignore"/>
             <tag name="monolog.logger" channel="caciobanu_guzzle"/>
             <argument/> <!-- guzzle message formatter -->
             <argument type="constant">Psr\Log\LogLevel::INFO</argument>

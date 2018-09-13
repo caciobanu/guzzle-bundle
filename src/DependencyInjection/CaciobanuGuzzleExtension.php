@@ -7,6 +7,7 @@ use Symfony\Component\DependencyInjection\ChildDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
+use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 
 class CaciobanuGuzzleExtension extends Extension
@@ -45,8 +46,8 @@ class CaciobanuGuzzleExtension extends Extension
         $handlerDefinition = new ChildDefinition('caciobanu_guzzle.handler_stack.abstract');
 
         if ($logging) {
+            $this->createLogger($handlerDefinition, $container, $clientName);
             $handlerDefinition->addTag('caciobanu_guzzle.loggable', ['client' => $clientName]);
-            $handlerDefinition->setPublic(true);
         }
 
         $container->setDefinition(
@@ -56,5 +57,25 @@ class CaciobanuGuzzleExtension extends Extension
 
 
         return $handlerDefinition;
+    }
+
+    private function createLogger(Definition $handler, ContainerBuilder $container, string $clientName): void
+    {
+        $formatterDefinition = new ChildDefinition('caciobanu_guzzle.message_formatter.abstract');
+        $container->setDefinition(
+            sprintf('caciobanu_guzzle.message_formatter.%s', $clientName),
+            $formatterDefinition
+        );
+
+        $loggerDefinition = new ChildDefinition('caciobanu_guzzle.logger.abstract');
+        $loggerDefinition->replaceArgument(
+            1,
+            new Reference(sprintf('caciobanu_guzzle.message_formatter.%s', $clientName))
+        );
+
+        $container->setDefinition(
+            sprintf('caciobanu_guzzle.logger.%s', $clientName),
+            $loggerDefinition
+        );
     }
 }

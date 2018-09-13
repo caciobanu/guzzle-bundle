@@ -62,7 +62,7 @@ class CaciobanuGuzzleExtensionTest extends TestCase
         );
         $this->assertEquals(
             [
-                new Reference('monolog.logger', ContainerInterface::IGNORE_ON_INVALID_REFERENCE),
+                new Reference('logger', ContainerInterface::IGNORE_ON_INVALID_REFERENCE),
                 '',
                 'info',
             ],
@@ -135,6 +135,39 @@ class CaciobanuGuzzleExtensionTest extends TestCase
             $handlerDefinition->getTag('caciobanu_guzzle.loggable')
         );
 
+        $this->assertTrue($container->hasDefinition('caciobanu_guzzle.message_formatter.default'));
+        $this->assertEquals(
+            MessageFormatter::class,
+            $container->getDefinition('caciobanu_guzzle.message_formatter.default')->getClass()
+        );
+        $this->assertEquals(
+            [
+                MessageFormatter::DEBUG,
+            ],
+            $container->getDefinition('caciobanu_guzzle.message_formatter.default')->getArguments()
+        );
+
+        $this->assertTrue($container->hasDefinition('caciobanu_guzzle.logger.default'));
+        $this->assertEquals(
+            \Closure::class,
+            $container->getDefinition('caciobanu_guzzle.logger.default')->getClass()
+        );
+        $this->assertEquals(
+            [
+                new Reference('logger', ContainerInterface::IGNORE_ON_INVALID_REFERENCE),
+                new Reference('caciobanu_guzzle.message_formatter.default'),
+                'info',
+            ],
+            $container->getDefinition('caciobanu_guzzle.logger.default')->getArguments()
+        );
+        $this->assertEquals(
+            [
+                Middleware::class,
+                'log',
+            ],
+            $container->getDefinition('caciobanu_guzzle.logger.default')->getFactory()
+        );
+
         // Check second client with no logging enabled.
         $definition = $container->getDefinition('caciobanu_guzzle.client.no_logging');
         $arguments = $definition->getArguments();
@@ -143,6 +176,8 @@ class CaciobanuGuzzleExtensionTest extends TestCase
 
         $this->assertCount(0, $handlerDefinition->getTags());
         $this->assertFalse($handlerDefinition->hasTag('caciobanu_guzzle.loggable'));
+        $this->assertFalse($container->hasDefinition('caciobanu_guzzle.message_formatter.no_logging'));
+        $this->assertFalse($container->hasDefinition('caciobanu_guzzle.logger.no_logging'));
     }
 
     private function createContainer(string $configFile): ContainerBuilder
@@ -155,9 +190,10 @@ class CaciobanuGuzzleExtensionTest extends TestCase
         $container->addCompilerPass(new MiddlewareCompilerPass());
         $container->addCompilerPass(new MakeServicesPublicCompilerPass());
 
+        $container->register('logger', TestClient::class);
+
         $loader = new YamlFileLoader($container, new FileLocator(__DIR__ . '/Fixtures/yml'));
         $loader->load($configFile . '.yml');
-
 
         $container->compile();
 
