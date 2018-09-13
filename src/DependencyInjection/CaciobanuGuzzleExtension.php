@@ -46,7 +46,7 @@ class CaciobanuGuzzleExtension extends Extension
         $handlerDefinition = new ChildDefinition('caciobanu_guzzle.handler_stack.abstract');
 
         if ($logging) {
-            $this->createLogger($handlerDefinition, $container, $clientName);
+            $this->createLogger($container, $clientName);
             $handlerDefinition->addTag('caciobanu_guzzle.loggable', ['client' => $clientName]);
         }
 
@@ -59,7 +59,7 @@ class CaciobanuGuzzleExtension extends Extension
         return $handlerDefinition;
     }
 
-    private function createLogger(Definition $handler, ContainerBuilder $container, string $clientName): void
+    private function createLogger(ContainerBuilder $container, string $clientName): void
     {
         $formatterDefinition = new ChildDefinition('caciobanu_guzzle.message_formatter.abstract');
         $container->setDefinition(
